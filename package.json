@@ -1,0 +1,29 @@
+{
+  "name": "node-trex-api",
+  "version": "0.0.0",
+  "description": "REST API for Trex application.",
+  "main": "app.js",
+  "scripts": {
+    "dev": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuksamardzic/node-trex-api.git"
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "node-api",
+    "trex-api"
+  ],
+  "author": "Vuk Samardžić <samardzic.vuk@gmail.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/vuksamardzic/node-trex-api/issues"
+  },
+  "homepage": "https://github.com/vuksamardzic/node-trex-api#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.3"
+  }
+}
