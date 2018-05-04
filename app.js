@@ -1,25 +1,12 @@
-const express = require('express');
-const cors = require('cors');
+var express = require('express');
+var cors = require('cors');
 
-const app = express();
+var app = express();
 
 app.use(cors());
 
-const boardRouter = express.Router();
-boardRouter.get('/', (req, res) => {
-  res.json({new: true});
-});
-
-boardRouter.get('/new', (req, res) => {
-  res.json({newer: true});
-});
-
-
-app.use('/api/v1', boardRouter);
-app.get('/', (req, res) => {
+app.get('/', function(req, res) {
   res.json({ok: true});
 });
 
-app.listen(3000, () => {
-  console.log('listening on port 3000');
-});
+app.listen(process.env.PORT || 3000);
