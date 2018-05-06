@@ -9,7 +9,7 @@ var db = mongoose.connection;
 app.use(cors());
 
 app.get('/', function(req, res) {
-  res.json({ok: true});
+  res.send(process.env);
 });
 
 app.get('/api/v1/boards', (req, res) => {
