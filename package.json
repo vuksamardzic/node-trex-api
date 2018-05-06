@@ -24,6 +24,7 @@
   "homepage": "https://github.com/vuksamardzic/node-trex-api#readme",
   "dependencies": {
     "cors": "^2.8.4",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "mongoose": "^5.0.17"
   }
 }
