@@ -8,7 +8,7 @@ var cors = require('cors');
 // var db = mongoose.connection;
 app.use(cors());
 
-app.get('/', (req, res) => {
+app.get('/', function(req, res) {
   res.json({ok: true});
 });
 
