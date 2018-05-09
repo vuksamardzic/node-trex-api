@@ -1,19 +1,23 @@
-var express = require('express');
-var app = express();
-var cors = require('cors');
-var mongoose = require('mongoose');
-var boards = require('./models/boards.model');
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const mongoose = require('mongoose');
+const Board = require('./models/boards.model');
+const bodyParser = require('body-parser');
+
 mongoose.connect('mongodb://vs:12345@ds117070.mlab.com:17070/trex');
-
-var db = mongoose.connection;
+mongoose.Promise = global.Promise;
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(cors());
+app.use(bodyParser.json());
 
-app.get('/', function(req, res) {
-  res.send(process.env);
+app.get('/', function (req, res) {
+  res.json({ok: true});
 });
 
 app.get('/api/v1/boards', (req, res) => {
-  boards.getBoards((err, data) => {
+  Board.getBoards((err, data) => {
     if (err) {
       throw err;
     }
@@ -21,4 +25,21 @@ app.get('/api/v1/boards', (req, res) => {
   });
 });
 
-app.listen(process.env.PORT || 3000);
+app.post('/api/v1/boards', (req, res, next) => {
+
+  console.log(req.body);
+  const board = new Board(req.body);
+
+  board.save((err) => {
+    if (err) {
+      throw next(err);
+    } else {
+      res.json(board);
+    }
+  });
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log('listening on port -> ', port);
+});
