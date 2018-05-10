@@ -40,6 +40,4 @@ app.post('/api/v1/boards', (req, res, next) => {
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log('listening on port -> ', port);
-});
+app.listen(port);
