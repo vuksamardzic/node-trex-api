@@ -4,7 +4,10 @@
   "description": "REST API for Trex application.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "npm run prod && node ./dist/server.js",
+    "dev": "./node_modules/.bin/webpack --mode development --watch",
+    "prod": "./node_modules/.bin/webpack --mode production",
+    "init": "npm i -S body-parser cors express mongoose"
   },
   "repository": {
     "type": "git",
@@ -23,9 +26,19 @@
   },
   "homepage": "https://github.com/vuksamardzic/node-trex-api#readme",
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "express": "^4.16.3",
-    "mongoose": "^5.0.17"
+    "mongoose": "^5.1.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/preset-env": "^7.0.0-beta.51",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.0-beta.4",
+    "nodemon-webpack-plugin": "^4.0.3",
+    "webpack": "^4.12.1",
+    "webpack-cli": "^3.0.8",
+    "webpack-node-externals": "^1.7.2"
   }
 }
