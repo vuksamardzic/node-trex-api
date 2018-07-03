@@ -1,16 +1,15 @@
 import express from 'express';
+import boardController from './board.contoller';
 
 export const boardRouter = express.Router();
 
-const exec = () => {
-};
-
-boardRouter.param('id', exec());
+// boardRouter.param('id', boardController.findByParam);
 
 boardRouter.route('/')
-  .get(exec())
-  .post(exec());
+  .get(boardController.getAll)
+  .post(boardController.createOne);
 
 boardRouter.route('/:id')
-  .get(exec())
-  .post(exec());
+  .get(boardController.getOne)
+  .put(boardController.updateOne)
+  .delete(boardController.deleteOne);
