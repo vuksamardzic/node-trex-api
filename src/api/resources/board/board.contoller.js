@@ -8,12 +8,18 @@ const createOne = (model) => (req, res, next) => {
 
 const readAll = (model) => (req, res, next) => {
   return model.find({}).exec()
-    .then(docs => res.json(docs))
+    .then(docs => {
+      const data = docs.map(i => {
+        return { id: i['_id'], name: i.name };
+      });
+      res.json(data);
+    })
     .catch(error => next(error));
 };
 
 const readOne = () => (req, res) => {
-  return res.json(req.doc);
+  const doc = { id: req.doc['_id'], name: req.doc.name };
+  return res.json(doc);
 };
 
 const findById = (model) => (req, res, next, id) => {
