@@ -25,21 +25,26 @@ listRouter.route('/:bid')
       .populate('board')
       .exec()
       .then(docs => {
-        const data = {
-          data: {
-            board: {
-              _id: docs[0].board._id,
-              name: docs[0].board.name
-            },
-            lists: docs.map(d => {
-              return {
-                _id: d._id,
-                name: d.name,
-                done: d.done
-              };
-            })
-          }
-        };
+        let data = {};
+        if (docs && docs.length > 0) {
+          data = {
+            data: {
+              board: {
+                _id: docs[0].board._id,
+                name: docs[0].board.name
+              },
+              lists: docs.map(d => {
+                return {
+                  _id: d._id,
+                  name: d.name,
+                  done: d.done
+                };
+              })
+            }
+          };
+        } else {
+          data = null;
+        }
         res.json(data);
       })
       .catch(err => next(err));
