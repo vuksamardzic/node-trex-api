@@ -10,7 +10,7 @@ const readAll = (model) => (req, res, next) => {
   return model.find({}).exec()
     .then(docs => {
       const data = docs.map(i => {
-        return { id: i['_id'], name: i.name };
+        return { _id: i['_id'], name: i.name };
       });
       res.json(data);
     })
@@ -18,7 +18,7 @@ const readAll = (model) => (req, res, next) => {
 };
 
 const readOne = () => (req, res) => {
-  const doc = { id: req.doc['_id'], name: req.doc.name };
+  const doc = { _id: req.doc['_id'], name: req.doc.name };
   return res.json(doc);
 };
 
