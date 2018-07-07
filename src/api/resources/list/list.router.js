@@ -24,7 +24,24 @@ listRouter.route('/:bid')
     List.find({ board: req.params['bid'] })
       .populate('board')
       .exec()
-      .then(docs => res.json(docs))
+      .then(docs => {
+        const data = {
+          data: {
+            board: {
+              _id: docs[0].board._id,
+              name: docs[0].board.name
+            },
+            lists: docs.map(d => {
+              return {
+                _id: d._id,
+                name: d.name,
+                done: d.done
+              };
+            })
+          }
+        };
+        res.json(data);
+      })
       .catch(err => next(err));
   });
 
