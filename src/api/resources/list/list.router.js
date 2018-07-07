@@ -43,7 +43,7 @@ listRouter.route('/:bid')
             }
           };
         } else {
-          data = null;
+          data.data = null;
         }
         res.json(data);
       })
