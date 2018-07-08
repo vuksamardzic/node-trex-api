@@ -5,15 +5,14 @@ const schema = {
     type: String,
     required: true
   },
-  done: {
-    type: Boolean,
-    required: true,
-    default: false
-  },
-  board: {
+  board_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'board'
-  }
+  },
+  cards: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'card'
+  }]
 };
 
 const listSchema = mongoose.Schema(schema);

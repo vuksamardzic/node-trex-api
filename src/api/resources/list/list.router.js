@@ -1,70 +1,101 @@
 import express from 'express';
 import merge from 'lodash.merge';
 import { List } from './list.model';
+import { Board } from '../board/board.model';
 
 export const listRouter = express.Router({});
+
+listRouter.param('id', (req, res, next, id) => {
+  Board.findById(id).exec()
+    .then(doc => {
+      if (doc) {
+        req.doc = doc;
+        next();
+      } else {
+        next(new Error('doc not found.'));
+      }
+    })
+    .catch(err => next(err));
+});
+listRouter.param('lid', (req, res, next, id) => {
+  List.findById(id).exec()
+    .then(doc => {
+      if (doc) {
+        req.doc = doc;
+        next();
+      } else {
+        next(new Error('doc not found.'));
+      }
+    })
+    .catch(err => next(err));
+});
 
 listRouter.route('/')
   .get((req, res, next) => {
     List.find({})
-      .populate('board')
       .exec()
       .then(docs => res.json(docs))
       .catch(err => next(err));
+  })
+  .delete((req, res, next) => {
+    List.remove()
+      .then(doc => res.json({ message: 'Lists dropped.' }))
+      .catch(err => next(err));
   });
 
-listRouter.route('/:bid')
+listRouter.route('/:id')
   .post((req, res, next) => {
-    req.body.board = req.params['bid'];
-    List.create(req.body)
-      .then(doc => res.json(doc))
+    const doc = req.doc;
+    const body = req.body;
+
+    List.create(body)
+      .then(list => {
+        doc.lists.push(list._id);
+        return doc.save();
+      })
+      .then(board => {
+        res.json(board);
+      })
       .catch(err => next(err));
   })
   .get((req, res, next) => {
-    List.find({ board: req.params['bid'] })
-      .populate('board')
-      .exec()
-      .then(docs => {
-        let data = {};
-        if (docs && docs.length > 0) {
-          data = {
-            data: {
-              board: {
-                _id: docs[0].board._id,
-                name: docs[0].board.name
-              },
-              lists: docs.map(d => {
+    req.doc
+      .populate({
+        path: 'lists',
+        populate: { path: 'cards' }
+      })
+      .execPopulate()
+      .then(doc => {
+        const data = {
+          _id: doc._id,
+          name: doc.name,
+          lists: doc.lists.map(d => {
+            return {
+              _id: d._id,
+              name: d.name,
+              cards: d.cards.map(c => {
                 return {
-                  _id: d._id,
-                  name: d.name,
-                  done: d.done
+                  _id: c._id,
+                  name: c.name
                 };
               })
-            }
-          };
-        } else {
-          data.data = null;
-        }
+            };
+          })
+        };
         res.json(data);
       })
       .catch(err => next(err));
   });
 
-listRouter.route('/:lid/solo')
+listRouter.route('/:lid')
   .put((req, res, next) => {
-    List.findById(req.params['lid']).exec()
-      .then(doc => {
-        merge(doc, req.body);
-        doc.save();
-        res.json(doc);
-      })
+    merge(req.doc, req.body);
+    req.doc.save()
+      .then(doc => res.json(doc))
       .catch(err => next(err));
   })
   .delete((req, res, next) => {
-    List.findById(req.params['lid']).exec()
-      .then(doc => doc.remove()
-        .then(d => res.json({ message: `List [${d.name}] was deleted.` }))
-        .catch(err => next(err))
-      )
+    req.doc.remove()
+      .then(doc => res.json({ message: `List [${doc.name}] was deleted.` }))
       .catch(err => next(err));
   });
