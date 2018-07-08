@@ -4,11 +4,12 @@ import { Board } from './board.model';
 
 export const boardRouter = express.Router({});
 
-boardRouter.param('id', boardController(Board).findById);
+boardRouter.param('id', boardController(Board).findOne);
 
 boardRouter.route('/')
   .get(boardController(Board).readAll)
-  .post(boardController(Board).createOne);
+  .post(boardController(Board).createOne)
+  .delete(boardController(Board).deleteAll);
 
 boardRouter.route('/:id')
   .get(boardController(Board).readOne)

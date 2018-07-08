@@ -10,26 +10,37 @@ const readAll = (model) => (req, res, next) => {
   return model.find({}).exec()
     .then(docs => {
       const data = docs.map(i => {
-        return { _id: i['_id'], name: i.name };
+        return { _id: i._id, name: i.name };
       });
       res.json(data);
     })
     .catch(error => next(error));
 };
 
-const readOne = () => (req, res) => {
-  const doc = { _id: req.doc['_id'], name: req.doc.name };
-  return res.json(doc);
+const readOne = (model) => (req, res, next) => {
+  req.doc
+    .populate('lists')
+    .execPopulate()
+    .then(doc => {
+      console.log(doc);
+      return res.json({
+        _id: doc._id,
+        name: doc.name,
+        lists: doc.lists
+      });
+    })
+    .catch(err => next(err));
+
 };
 
-const findById = (model) => (req, res, next, id) => {
+const findOne = (model) => (req, res, next, id) => {
   return model.findById(id).exec()
     .then(doc => {
       if (doc) {
         req.doc = doc;
         next();
       } else {
-        next(new Error('Doc Not Found'));
+        next(new Error('doc not found.'));
       }
     })
     .catch(error => next(error));
@@ -42,6 +53,12 @@ const updateOne = () => (req, res, next) => {
     .catch(error => next(error));
 };
 
+const deleteAll = (model) => (req, res, next) => {
+  return model.remove()
+    .then(docs => res.json({ message: 'Boards dropped.' }))
+    .catch(error => next(error));
+};
+
 const deleteOne = () => (req, res, next) => {
   req.doc.remove()
     .then(doc => res.json({ message: `Board [${doc.name}] was deleted.` }))
@@ -51,10 +68,11 @@ const deleteOne = () => (req, res, next) => {
 export const boardController = (model) => {
   return {
     createOne: createOne(model),
-    readOne: readOne(),
+    readOne: readOne(model),
     readAll: readAll(model),
-    findById: findById(model),
+    findOne: findOne(model),
     updateOne: updateOne(),
+    deleteAll: deleteAll(model),
     deleteOne: deleteOne()
   };
 };
