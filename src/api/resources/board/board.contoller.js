@@ -1,4 +1,7 @@
 import merge from 'lodash.merge';
+import { List } from '../list/list.model';
+import { Card } from '../card/card.model';
+
 
 const createOne = (model) => (req, res, next) => {
   return model.create(req.body)
@@ -59,9 +62,13 @@ const deleteAll = (model) => (req, res, next) => {
     .catch(error => next(error));
 };
 
-const deleteOne = () => (req, res, next) => {
+const deleteOne = (model) => (req, res, next) => {
   req.doc.remove()
-    .then(doc => res.json({ message: `Board [${doc.name}] was deleted.` }))
+    .then(doc => {
+      List.remove({ board_id: doc._id }).exec();
+      Card.remove({ board_id: doc._id }).exec();
+      res.json({ message: `Board [${doc.name}] was deleted.` });
+    })
     .catch(error => next(error));
 };
 
@@ -73,6 +80,6 @@ export const boardController = (model) => {
     findOne: findOne(model),
     updateOne: updateOne(),
     deleteAll: deleteAll(model),
-    deleteOne: deleteOne()
+    deleteOne: deleteOne(model)
   };
 };
