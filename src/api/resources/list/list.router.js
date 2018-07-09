@@ -2,6 +2,7 @@ import express from 'express';
 import merge from 'lodash.merge';
 import { List } from './list.model';
 import { Board } from '../board/board.model';
+import { Card } from '../card/card.model';
 
 export const listRouter = express.Router({});
 
@@ -96,6 +97,9 @@ listRouter.route('/:lid')
   })
   .delete((req, res, next) => {
     req.doc.remove()
-      .then(doc => res.json({ message: `List [${doc.name}] was deleted.` }))
+      .then(doc => {
+        Card.remove({ list_id: doc._id }).exec();
+        res.json({ message: `List [${doc.name}] was deleted.` });
+      })
       .catch(err => next(err));
   });
