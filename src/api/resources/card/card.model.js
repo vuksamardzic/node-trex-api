@@ -13,6 +13,10 @@ const schema = {
   list_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'list'
+  },
+  board_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'board'
   }
 };
 

@@ -26,7 +26,7 @@ cardRouter.route('/')
   })
   .delete((req, res, next) => {
     Card.remove({})
-      .then(docs => res.json(docs))
+      .then(docs => res.json({ message: 'Cards dropped.' }))
       .catch(err => next(err));
   });
 
